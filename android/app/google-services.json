@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "131442020913",
+    "firebase_url": "https://employee-307bb-default-rtdb.firebaseio.com",
+    "project_id": "employee-307bb",
+    "storage_bucket": "employee-307bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131442020913:android:f0780cfe7a12802f993b10",
+        "android_client_info": {
+          "package_name": "com.example.amira_market"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6bytolFKVEwij6pWeKQWPkfXI4N9-nPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131442020913:android:4d65b50c968387ea993b10",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6bytolFKVEwij6pWeKQWPkfXI4N9-nPQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
