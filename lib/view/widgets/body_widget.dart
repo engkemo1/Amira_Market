@@ -30,8 +30,8 @@ class BodyWidget extends StatelessWidget {
               padding: EdgeInsets.all(2.0),
               child: CircleAvatar(
                 radius: 25,
-                backgroundColor: Colors.white12,
-                backgroundImage: AssetImage("images/logo.jpg"),
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage("images/logo.png"),
               ),
             ),
             title: Text(

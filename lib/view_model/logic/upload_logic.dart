@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_excel/excel.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../../model/emp_info_item.dart';
 import '../../model/file_info.dart';
 
@@ -15,13 +13,7 @@ class UploadController extends GetxController {
   List<FileInfo> failedUpload = [];
   int pickedFilesLength = 0;
 
-
-
-
-
-
   Future<String> downloadExcelFile(String myFile) async {
-
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference ref = storage.ref().child(myFile);
 
@@ -32,66 +24,64 @@ class UploadController extends GetxController {
     await ref.writeToFile(downloadToFile);
 
     return filePath;
-
   }
 
-  List readExcelFile(String filePath,String empCode){
-
+  List readExcelFile(String filePath, String empCode) {
     var bytes = File(filePath).readAsBytesSync();
     var excel = Excel.decodeBytes(bytes);
 
     List loggedEmpInfo = [];
 
     for (var table in excel.tables.keys) {
+      var tableRows = excel.tables[table]!.rows;
 
-      print(table); //sheet Name
-      print(excel.tables[table]!.maxCols);
-      print(excel.tables[table]!.maxRows);
+      // Skip the first row assuming it's a header row
+      var rowsToProcess = tableRows.skip(1);
 
-      print(excel.tables[table]!.rows.first);
+      for (var row in rowsToProcess) {
+        if (row.isNotEmpty && row[0] != null && row[1] != null) {
+          try {
+            // Treat 'كود الوظيفي' as string to prevent misinterpretation
+            String cellValue = row[0]!.value.toString();
 
-      for (var row in excel.tables[table]!.rows) {
-
-        if(row[0] == null || row[1] == null){
-          continue;
-        }
-
-        try{
-
-          var condition = (double.tryParse(row[0]!.value.toString())?.truncate()).toString() == empCode;
-          if(condition){
-
-            loggedEmpInfo.add(excel.tables[table]!.rows.first);
-            loggedEmpInfo.add(row);
-            return loggedEmpInfo;
+            var condition = cellValue == empCode;
+            if (condition) {
+              loggedEmpInfo.add(excel.tables[table]!.rows.first);
+              loggedEmpInfo.add(row);
+              return loggedEmpInfo;
+            }
+          } catch (e) {
+            print(e);
           }
-
-        }catch(e){
-          print(e);
         }
-
       }
     }
 
     return loggedEmpInfo;
   }
-
-  List<EmpInfoItem> getEmpInfoItem(List loggedEmpInfo){
-
+  List<EmpInfoItem> getEmpInfoItem(List loggedEmpInfo) {
     List<EmpInfoItem> empInfoItemList = [];
 
-    if(loggedEmpInfo.isNotEmpty){
+    if (loggedEmpInfo.isNotEmpty) {
+      for (int index = 0; index < loggedEmpInfo[0].length; index++) {
+        var title = loggedEmpInfo[0][index]?.value?.toString() ?? 'Unknown';
+        var value = loggedEmpInfo[1][index]?.value?.toString() ?? 'Unknown';
 
-      for(int index = 0; index <loggedEmpInfo[0].length;index++){
+        // Check and convert the value type if necessary
+        if (loggedEmpInfo[1][index]?.value is DateTime) {
+          value = (loggedEmpInfo[1][index]?.value as DateTime).toIso8601String();
+        } else if (loggedEmpInfo[1][index]?.value is double) {
+          value = (loggedEmpInfo[1][index]?.value as double).toStringAsFixed(2);
+        }
 
-        var empInfoItem = EmpInfoItem(title:loggedEmpInfo[0][index].value.toString(),value:loggedEmpInfo[1][index].value.toString());
+        var empInfoItem = EmpInfoItem(title: title, value: value);
         empInfoItemList.add(empInfoItem);
       }
-
     }
 
     return empInfoItemList;
   }
+
 
   Future<void> pickFilesAndUpload(Function completion) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -127,9 +117,7 @@ class UploadController extends GetxController {
       await storageRef.delete();
 
       print('File deleted successfully');
-
     } catch (e) {
-
       if (e is FirebaseException && e.code == 'object-not-found') {
         print('File does not exist. Ready to add the file...');
       } else {
@@ -143,10 +131,9 @@ class UploadController extends GetxController {
 
       String downloadURL = await storageRef.getDownloadURL();
       print('Download URL: $downloadURL');
-       SmartDialog.dismiss();
+      SmartDialog.dismiss();
 
       if (completion != null) {
-
         completion();
       }
     } catch (e) {
@@ -156,7 +143,7 @@ class UploadController extends GetxController {
           name: '${file.name}',
           uploaded: false,
           msg: "لم يتم رفع الملف بنجاح"));
-       SmartDialog.dismiss();
+      SmartDialog.dismiss();
 
       if (completion != null) {
         completion();
@@ -171,9 +158,8 @@ class UploadController extends GetxController {
         return AlertDialog(
           title: Text('تم رفع الملفات ما عدا الآتي :'),
           content: const SizedBox(
-            width: 300.0, // Set the width of the dialog
-            height: 400.0, // Set the height of the dialog
-            // child: MyListView(),
+            width: 300.0,
+            height: 400.0,
           ),
           actions: [
             TextButton(
@@ -187,5 +173,4 @@ class UploadController extends GetxController {
       },
     );
   }
-
 }

@@ -38,12 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: MediaQuery
                         .of(context)
                         .size
-                        .height * 0.18,
+                        .height * 0.10,
                   ),
-                  Image.asset("images/logo.jpg"),
-                  const SizedBox(
-                    height: 100,
-                  ),
+                  Image.asset("images/logo.png"),
+
                   TextFormField(
                     controller: _empCodeController,
                     validator: (value) {

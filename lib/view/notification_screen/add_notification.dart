@@ -37,8 +37,9 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                 children: [
                   const CircleAvatar(
                     radius: 35,
+                    backgroundColor: Colors.black,
                     backgroundImage: AssetImage(
-                      "images/logo.jpg",
+                      "images/logo.png",
                     ),
                   ),
                   const Text(
